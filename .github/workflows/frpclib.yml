@@ -67,8 +67,9 @@ jobs:
       - run: gomobile init -v
 
       - run: go mod tidy && go get -u golang.org/x/mobile/bind
-      - run: cd ./cmd/frpclib && gomobile bind -v --target=android -androidapi ${{ env.MIN_ANDROID_API }} -o frpclib.aar -ldflags="-s -w" .
-
+      
+      - run: cd ./cmd/frpclib && gomobile bind -v --target=android/arm,android/arm64 -androidapi ${{ env.MIN_ANDROID_API }} -o frpclib.aar -ldflags="-s -w" .
+    
       - name: Save logcat output
         uses: actions/upload-artifact@master
         if: failure()
