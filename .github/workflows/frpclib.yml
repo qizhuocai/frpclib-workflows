@@ -14,8 +14,7 @@ on:
 env:
   GO_VERSION: '1.22'
   GOMOBILE_COMMIT: 'latest'
-  NDK_LTS_VERSION: '21.1.6352462'  # 一个较老的 NDK 版本
-  # NDK_LTS_VERSION: '25.1.8937393'
+  NDK_LTS_VERSION: '21.1.6352462'  # 使用较旧的 NDK 版本支持 API 19
   SDK_TOOLS_VERSION: '9477386'
   ANDROID_PLATFORM_VERSION: '33'
   ANDROID_BUILD_TOOLS_VERSION: '33.0.1'
@@ -32,16 +31,6 @@ jobs:
         with:
           fetch-depth: 0
 
-      # 删除旧的工作流
-      # - name: Delete Old Build
-      #   uses: Mattraks/delete-workflow-runs@v2
-      #   with:
-      #     token: ${{ secrets.TOKEN }}
-      #     repository: ${{ github.repository }}
-      #     retain_days: 0 # 全部删除只留正在跑的一条
-      #     keep_minimum_runs: 0 # 全部删除只留正在跑的一条
-      #     delete_workflow_pattern: 'frpclib'
-
       - run: sudo apt-get update -q -y
       - run: sudo apt-get install -q -y --no-install-recommends curl wget unzip g++ libc6-dev
 
@@ -55,8 +44,7 @@ jobs:
       - run: sdkmanager --update
       - run: sdkmanager 'platforms;android-${{ env.ANDROID_PLATFORM_VERSION }}'
       - run: sdkmanager 'build-tools;${{ env.ANDROID_BUILD_TOOLS_VERSION }}'
-      # - run: sdkmanager 'ndk;${{ env.NDK_LTS_VERSION }}'
-      - run: sdkmanager 'ndk;21.1.6352462'
+      - run: sdkmanager 'ndk;${{ env.NDK_LTS_VERSION }}'  # 使用 NDK 21.1.6352462
       - run: sdkmanager 'extras;android;m2repository'
 
       - name: Set up Go
@@ -79,7 +67,6 @@ jobs:
           name: logcat
           path: artifacts/logcat.log
 
-      # 存档打包的文件
       - name: Archive production artifacts
         uses: actions/upload-artifact@v3
         with:
