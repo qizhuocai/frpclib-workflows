@@ -55,7 +55,8 @@ jobs:
       - run: sdkmanager --update
       - run: sdkmanager 'platforms;android-${{ env.ANDROID_PLATFORM_VERSION }}'
       - run: sdkmanager 'build-tools;${{ env.ANDROID_BUILD_TOOLS_VERSION }}'
-      - run: sdkmanager 'ndk;${{ env.NDK_LTS_VERSION }}'
+      # - run: sdkmanager 'ndk;${{ env.NDK_LTS_VERSION }}'
+      - run: sdkmanager 'ndk;21.1.6352462'
       - run: sdkmanager 'extras;android;m2repository'
 
       - name: Set up Go
