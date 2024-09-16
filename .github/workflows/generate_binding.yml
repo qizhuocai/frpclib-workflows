@@ -1,0 +1,32 @@
+name: Generate C Binding
+
+on:
+  push:
+    branches:
+      - main  # 当推送到main分支时触发
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v3
+
+    - name: Set up Go
+      uses: actions/setup-go@v4
+      with:
+        go-version: '1.20'  # 设定Go版本
+
+    - name: Build Go shared library
+      run: |
+        cd cmd/frpclib
+        go build -o ../../libfrpc.so -buildmode=c-shared main.go
+
+    - name: Upload Go shared library and header
+      uses: actions/upload-artifact@v3
+      with:
+        name: shared-library
+        path: |
+          libfrpc.so
+          libfrpc.h
