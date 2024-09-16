@@ -21,12 +21,12 @@ jobs:
     - name: Build Go shared library
       run: |
         cd cmd/frpclib
-        go build -o ../../libfrpc.so -buildmode=c-shared main.go
+        go build -o libfrpc.so -buildmode=c-shared main.go
 
     - name: Upload Go shared library and header
       uses: actions/upload-artifact@v3
       with:
         name: shared-library
         path: |
-          ../../libfrpc.so
-          ../../libfrpc.h
+          cmd/frpclib/libfrpc.so
+          cmd/frpclib/libfrpc.h
