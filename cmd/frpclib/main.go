@@ -1,6 +1,7 @@
 package main
 
 import (
+	"C" // 必须导入C包以使用 //export 注释
 	"strings"
 
 	_ "github.com/fatedier/frp/assets/frpc"
@@ -9,40 +10,46 @@ import (
 	"github.com/fatedier/frp/pkg/util/version"
 )
 
+//export GetVersion
+func GetVersion() *C.char {
+	return C.CString(version.Full())
+}
+
+//export RunFile
+func RunFile(uid *C.char, cfgFilePath *C.char) *C.char {
+	err, _ := sub.RunClientWithUid(C.GoString(uid), C.GoString(cfgFilePath))
+	if err != nil {
+		return C.CString(err.Error())
+	}
+	return nil
+}
+
+//export RunContent
+func RunContent(uid *C.char, cfgContent *C.char) *C.char {
+	err, _ := sub.RunClientByContent(C.GoString(uid), C.GoString(cfgContent))
+	if err != nil {
+		return C.CString(err.Error())
+	}
+	return nil
+}
+
+//export Close
+func Close(uid *C.char) C.bool {
+	return C.bool(sub.Close(C.GoString(uid)))
+}
+
+//export GetUids
+func GetUids() *C.char {
+	uids := sub.GetUids()
+	return C.CString(strings.Join(uids, ","))
+}
+
+//export IsRunning
+func IsRunning(uid *C.char) C.bool {
+	return C.bool(sub.IsRunning(C.GoString(uid)))
+}
+
 func main() {
 	system.EnableCompatibilityMode()
 	sub.Execute()
-}
-
-func GetVersion() string {
-	return version.Full()
-}
-
-func RunFile(uid string, cfgFilePath string) (errString string) {
-	err, _ := sub.RunClientWithUid(uid, cfgFilePath)
-	if err != nil {
-		return err.Error()
-	}
-	return ""
-}
-
-func RunContent(uid string, cfgContent string) (errString string) {
-	err, _ := sub.RunClientByContent(uid, cfgContent)
-	if err != nil {
-		return err.Error()
-	}
-	return ""
-}
-
-func Close(uid string) (ret bool) {
-	return sub.Close(uid)
-}
-
-func GetUids() string {
-	uids := sub.GetUids()
-	return strings.Join(uids, ",")
-}
-
-func IsRunning(uid string) (running bool) {
-	return sub.IsRunning(uid)
 }
