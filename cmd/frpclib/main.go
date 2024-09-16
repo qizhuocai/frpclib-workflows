@@ -34,8 +34,11 @@ func RunContent(uid *C.char, cfgContent *C.char) *C.char {
 }
 
 //export Close
-func Close(uid *C.char) C.bool {
-	return C.bool(sub.Close(C.GoString(uid)))
+func Close(uid *C.char) C.int {
+	if sub.Close(C.GoString(uid)) {
+		return 1 // 返回1表示成功
+	}
+	return 0 // 返回0表示失败
 }
 
 //export GetUids
@@ -45,8 +48,11 @@ func GetUids() *C.char {
 }
 
 //export IsRunning
-func IsRunning(uid *C.char) C.bool {
-	return C.bool(sub.IsRunning(C.GoString(uid)))
+func IsRunning(uid *C.char) C.int {
+	if sub.IsRunning(C.GoString(uid)) {
+		return 1 // 返回1表示运行中
+	}
+	return 0 // 返回0表示未运行
 }
 
 func main() {
